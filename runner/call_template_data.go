@@ -8,8 +8,8 @@ import (
 	"math/rand"
 	"errors"
 	"time"
-	"fmt"
 	"strings"
+	"path"
 
 	"github.com/jhump/protoreflect/desc"
 )
@@ -58,7 +58,6 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 				return "", err
 			}
 			s := strings.TrimSpace(string(bytes))
-			fmt.Printf(s)
 			return s, nil
 		},
 		"List": func(dirPath string) ([]string, error) {
@@ -69,7 +68,7 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
             paths := []string{}
             for _, f := range files {
                 if !f.IsDir() {
-                    paths = append(paths, dirPath + f.Name())
+                    paths = append(paths, path.Join(dirPath, f.Name()))
                 }
             }
             return paths, nil
