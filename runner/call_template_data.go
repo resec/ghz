@@ -3,13 +3,13 @@ package runner
 import (
 	"bytes"
 	"encoding/json"
-	"text/template"
+	"errors"
 	"io/ioutil"
 	"math/rand"
-	"errors"
-	"time"
-	"strings"
 	"path"
+	"strings"
+	"text/template"
+	"time"
 
 	"github.com/jhump/protoreflect/desc"
 )
@@ -61,32 +61,32 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			return s, nil
 		},
 		"ListFile": func(dirPath string) ([]string, error) {
-            files, err := ioutil.ReadDir(dirPath)
-            if err != nil {
-                return []string{}, err
-            }
-            paths := []string{}
-            for _, f := range files {
-                if !f.IsDir() {
-                    paths = append(paths, path.Join(dirPath, f.Name()))
-                }
-            }
-            return paths, nil
+			files, err := ioutil.ReadDir(dirPath)
+			if err != nil {
+				return []string{}, err
+			}
+			paths := []string{}
+			for _, f := range files {
+				if !f.IsDir() {
+					paths = append(paths, path.Join(dirPath, f.Name()))
+				}
+			}
+			return paths, nil
 		},
-        "RandomChoice": func(values []string) (string, error) {
-            if len(values) < 1 {
-                return "", errors.New("values is empty")
-            }
-            value := values[rand.Intn(len(values))]
-            return value, nil
-        },
-        "RoundRobin": func(values []string) (string, error) {
-            if len(values) < 1 {
-                return "", errors.New("values is empty")
-            }
-            value := values[td.RequestNumber % int64(len(values))]
-            return value, nil
-        },
+		"RandomChoice": func(values []string) (string, error) {
+			if len(values) < 1 {
+				return "", errors.New("values is empty")
+			}
+			value := values[rand.Intn(len(values))]
+			return value, nil
+		},
+		"RoundRobin": func(values []string) (string, error) {
+			if len(values) < 1 {
+				return "", errors.New("values is empty")
+			}
+			value := values[td.RequestNumber%int64(len(values))]
+			return value, nil
+		},
 	}).Parse(data))
 	var tpl bytes.Buffer
 	err := t.Execute(&tpl, td)
