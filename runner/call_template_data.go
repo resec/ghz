@@ -52,7 +52,7 @@ func newCallTemplateData(mtd *desc.MethodDescriptor, workerID string, reqNum int
 
 func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 	t := template.Must(template.New("call_template_data").Funcs(template.FuncMap{
-		"Load": func(file string) (string, error) {
+		"Read": func(file string) (string, error) {
 			bytes, err := ioutil.ReadFile(file)
 			if err != nil {
 				return "", err
@@ -60,7 +60,7 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			s := strings.TrimSpace(string(bytes))
 			return s, nil
 		},
-		"List": func(dirPath string) ([]string, error) {
+		"ListFile": func(dirPath string) ([]string, error) {
             files, err := ioutil.ReadDir(dirPath)
             if err != nil {
                 return []string{}, err
@@ -78,6 +78,13 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
                 return "", errors.New("values is empty")
             }
             value := values[rand.Intn(len(values))]
+            return value, nil
+        },
+        "RoundRobin": func(values []string) (string, error) {
+            if len(values) < 1 {
+                return "", errors.New("values is empty")
+            }
+            value := values[td.RequestNumber % int64(len(values))]
             return value, nil
         },
 	}).Parse(data))
