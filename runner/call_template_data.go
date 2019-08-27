@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"path"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -53,6 +54,7 @@ func newCallTemplateData(mtd *desc.MethodDescriptor, workerID string, reqNum int
 
 func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 	t := template.Must(template.New("call_template_data").Funcs(template.FuncMap{
+		// Read all file content into string
 		"Read": func(file string) (string, error) {
 			bytes, err := ioutil.ReadFile(file)
 			if err != nil {
@@ -61,10 +63,26 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			s := strings.TrimSpace(string(bytes))
 			return s, nil
 		},
+		// Genereate sequence of numbers with start, end, step, include start, exclude end
+		"Range": func(start, end, step int) []string {
+			if step <= 0 || end < start {
+				return []string{}
+			}
+			s := make([]string, 0, 1+(end-start)/step)
+			for start < end {
+				s = append(s, strconv.Itoa(start))
+				start += step
+			}
+			return s
+		},
+		// Alias strings.Split
+		"Split": strings.Split,
+		// Base64 encode input string, return string
 		"B64Encode": func(data string) string {
 			s := base64.StdEncoding.EncodeToString([]byte(data))
 			return s
 		},
+		// Base64 decode input string, return string
 		"B64Decode": func(data string) (string, error) {
 			b, err := base64.StdEncoding.DecodeString(data)
 			if err != nil {
@@ -72,6 +90,7 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return string(b), nil
 		},
+		// List all file in dirPath, return file path
 		"ListFile": func(dirPath string) ([]string, error) {
 			files, err := ioutil.ReadDir(dirPath)
 			if err != nil {
@@ -85,6 +104,7 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return paths, nil
 		},
+		// Randomly choose one value from values
 		"RandomChoice": func(values []string) (string, error) {
 			if len(values) < 1 {
 				return "", errors.New("values is empty")
@@ -92,6 +112,7 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			value := values[rand.Intn(len(values))]
 			return value, nil
 		},
+		// RoundRobin-ly select one value from values, mod with RequestNumber
 		"RoundRobin": func(values []string) (string, error) {
 			if len(values) < 1 {
 				return "", errors.New("values is empty")
