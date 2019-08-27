@@ -2,6 +2,7 @@ package runner
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -59,6 +60,17 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			s := strings.TrimSpace(string(bytes))
 			return s, nil
+		},
+		"B64Encode": func(data string) string {
+			s := base64.StdEncoding.EncodeToString([]byte(data))
+			return s
+		},
+		"B64Decode": func(data string) (string, error) {
+			b, err := base64.StdEncoding.DecodeString(data)
+			if err != nil {
+				return "", err
+			}
+			return string(b), nil
 		},
 		"ListFile": func(dirPath string) ([]string, error) {
 			files, err := ioutil.ReadDir(dirPath)
