@@ -6,7 +6,6 @@ import (
 	"io"
 	"sync/atomic"
 	"time"
-	"os"
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
@@ -147,7 +146,7 @@ func (w *Worker) getMessages(ctd *callTemplateData, inputData []byte) ([]*dynami
 			return nil, err
 		}
 		if w.config.dryRun {
-            fmt.Println(os.Stdout, string(data))
+            fmt.Println(string(data))
         }
 		inputs, err = createPayloadsFromJSON(string(data), w.mtd)
 		if err != nil {
