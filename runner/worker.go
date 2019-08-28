@@ -6,6 +6,7 @@ import (
 	"io"
 	"sync/atomic"
 	"time"
+	"os"
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
@@ -79,6 +80,10 @@ func (w *Worker) makeRequest() error {
 		}
 	}
 
+    if w.config.dryRun {
+        return nil
+    }
+
 	mdMap, err := ctd.executeMetadata(string(w.config.metadata))
 	if err != nil {
 		return err
@@ -141,6 +146,9 @@ func (w *Worker) getMessages(ctd *callTemplateData, inputData []byte) ([]*dynami
 		if err != nil {
 			return nil, err
 		}
+		if w.config.dryRun {
+            fmt.Println(os.Stdout, string(data))
+        }
 		inputs, err = createPayloadsFromJSON(string(data), w.mtd)
 		if err != nil {
 			return nil, err

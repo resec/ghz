@@ -65,6 +65,7 @@ type config struct {
 	Tags            *map[string]string `json:"tags,omitempty" toml:"tags,omitempty" yaml:"tags,omitempty"`
 	ReflectMetadata *map[string]string `json:"reflect-metadata,omitempty" toml:"reflect-metadata,omitempty" yaml:"reflect-metadata,omitempty"`
 	Host            string             `json:"host" toml:"host" yaml:"host"`
+	DryRun          bool               `json:"sdryRun" toml:"dryRun" yaml:"dryRun"`
 }
 
 // UnmarshalJSON is our custom implementation to handle the Duration fields

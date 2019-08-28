@@ -68,6 +68,8 @@ var (
 	cpus = kingpin.Flag("cpus", "Number of cpu cores to use.").Default(strconv.FormatUint(uint64(nCPUs), 10)).Uint()
 
 	host = kingpin.Arg("host", "Host and port to test.").String()
+
+	dryRun = kingpin.Flag("dry-run", "Only prints call data (JSON).").Default("false").Bool()
 )
 
 func main() {
@@ -126,6 +128,7 @@ func main() {
 		runner.WithStreamInterval(time.Duration(cfg.SI)),
 		runner.WithReflectionMetadata(cfg.ReflectMetadata),
 		runner.WithConnections(cfg.Connections),
+		runner.WithDryRun(cfg.DryRun),
 	)
 
 	if strings.TrimSpace(cfg.MetadataPath) != "" {
@@ -153,6 +156,10 @@ func main() {
 	if err != nil {
 		handleError(err)
 	}
+
+	if cfg.DryRun {
+        return
+    }
 
 	output := os.Stdout
 	outputPath := strings.TrimSpace(cfg.Output)
@@ -269,6 +276,7 @@ func createConfigFromArgs() (*config, error) {
 		Name:            *name,
 		Tags:            &tagsMap,
 		ReflectMetadata: &rmdMap,
+        DryRun:          *dryRun,
 	}
 
 	return cfg, nil

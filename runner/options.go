@@ -61,6 +61,8 @@ type RunConfig struct {
 	name string
 	cpus int
 	tags []byte
+
+    dryRun bool
 }
 
 // Option controls some aspect of run
@@ -125,6 +127,15 @@ func WithInsecure(insec bool) Option {
 func WithSkipTLSVerify(skip bool) Option {
 	return func(o *RunConfig) error {
 		o.skipVerify = skip
+
+		return nil
+	}
+}
+
+// WithDryRun Only prints call data (JSON).
+func WithDryRun(dryRun bool) Option {
+	return func(o *RunConfig) error {
+		o.dryRun = dryRun
 
 		return nil
 	}
