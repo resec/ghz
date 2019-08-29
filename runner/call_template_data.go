@@ -112,6 +112,40 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			value := values[rand.Intn(len(values))]
 			return value, nil
 		},
+		// Randomly returns a continous non-empty sub sequence of input
+		"RandomSlice": func(values []string) ([]string, error) {
+			if len(values) < 1 {
+				return []string{}, errors.New("values is empty")
+			}
+			start := rand.Intn(len(values))
+			end := rand.Intn(len(values))
+			if start > end {
+				start, end = end, start
+			} else if start == end {
+				if start == 0 {
+					end = end + 1
+				} else {
+					start = start - 1
+				}
+			}
+			return values[start:end], nil
+		},
+		// Randomly returns a int between [n,m), where m > n > 0, returns string
+		"RandomInt": func(n, m int) (string, error) {
+			if n < 0 || m < 1 {
+				return "", errors.New("must be m > n > 0")
+			}
+			if m <= n {
+				return "", errors.New("m must > n")
+			}
+			value := strconv.Itoa(rand.Intn(m-n) + n)
+			return value, nil
+		},
+		// Shuffle the input and returns
+		"Shuffle": func(values []string) []string {
+			rand.Shuffle(len(values), func(i, j int) { values[i], values[j] = values[j], values[i] })
+			return values
+		},
 		// RoundRobin-ly select one value from values, mod with RequestNumber
 		"RoundRobin": func(values []string) (string, error) {
 			if len(values) < 1 {
