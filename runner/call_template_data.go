@@ -75,6 +75,14 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return s
 		},
+		// Convert input string to int
+		"ToInt": func(text string) (int, error) {
+			value, err := strconv.Atoi(text)
+			if err != nil {
+				return 0, err
+			}
+			return value, nil
+		},
 		// Alias strings.Split
 		"Split": strings.Split,
 		// Base64 encode input string, return string
