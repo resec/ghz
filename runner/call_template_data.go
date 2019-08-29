@@ -35,7 +35,7 @@ type callTemplateData struct {
 func newCallTemplateData(mtd *desc.MethodDescriptor, workerID string, reqNum int64) *callTemplateData {
 	now := time.Now()
 
-	rand.Seed(now.Unix())
+	rand.Seed(now.UnixNano())
 
 	return &callTemplateData{
 		WorkerID:           workerID,
