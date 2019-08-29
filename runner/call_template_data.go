@@ -83,6 +83,8 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return value, nil
 		},
+		// Alias strings.Join
+		"Join": strings.Join,
 		// Alias strings.Split
 		"Split": strings.Split,
 		// Base64 encode input string, return string
