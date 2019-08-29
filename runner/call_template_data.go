@@ -140,10 +140,10 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return values[start:end], nil
 		},
-		// Randomly returns a int between [n,m), where m > n > 0, returns string
+		// Randomly returns a int between [n,m), where m > n >= 0, returns string
 		"RandomInt": func(n, m int) (string, error) {
 			if n < 0 || m < 1 {
-				return "", errors.New("must be m > n > 0")
+				return "", errors.New("must be m > n >= 0")
 			}
 			if m <= n {
 				return "", errors.New("m must > n")
