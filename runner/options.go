@@ -62,7 +62,7 @@ type RunConfig struct {
 	cpus int
 	tags []byte
 
-    dryRun bool
+	dryRun bool
 }
 
 // Option controls some aspect of run

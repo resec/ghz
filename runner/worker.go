@@ -79,9 +79,9 @@ func (w *Worker) makeRequest() error {
 		}
 	}
 
-    if w.config.dryRun {
-        return nil
-    }
+	if w.config.dryRun {
+		return nil
+	}
 
 	mdMap, err := ctd.executeMetadata(string(w.config.metadata))
 	if err != nil {
@@ -146,8 +146,8 @@ func (w *Worker) getMessages(ctd *callTemplateData, inputData []byte) ([]*dynami
 			return nil, err
 		}
 		if w.config.dryRun {
-            fmt.Println(string(data))
-        }
+			fmt.Println(string(data))
+		}
 		inputs, err = createPayloadsFromJSON(string(data), w.mtd)
 		if err != nil {
 			return nil, err

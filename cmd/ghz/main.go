@@ -158,8 +158,8 @@ func main() {
 	}
 
 	if cfg.DryRun {
-        return
-    }
+		return
+	}
 
 	output := os.Stdout
 	outputPath := strings.TrimSpace(cfg.Output)
@@ -276,7 +276,7 @@ func createConfigFromArgs() (*config, error) {
 		Name:            *name,
 		Tags:            &tagsMap,
 		ReflectMetadata: &rmdMap,
-        DryRun:          *dryRun,
+		DryRun:          *dryRun,
 	}
 
 	return cfg, nil
