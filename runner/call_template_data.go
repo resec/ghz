@@ -140,6 +140,18 @@ func (td *callTemplateData) execute(data string) (*bytes.Buffer, error) {
 			}
 			return values[start:end], nil
 		},
+		// Randomly returns a continous sub sequence with length k of input
+		"RandomSliceK": func(values []string, k int) ([]string, error) {
+			if len(values) < k {
+				return []string{}, errors.New("values must be longer than k")
+			}
+			if len(values) == k {
+				return values, nil
+			}
+			start := rand.Intn(len(values) - k)
+			end := start + k
+			return values[start:end], nil
+		},
 		// Randomly returns a int between [n,m), where m > n >= 0, returns string
 		"RandomInt": func(n, m int) (string, error) {
 			if n < 0 || m < 1 {
