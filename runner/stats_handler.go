@@ -2,7 +2,6 @@ package runner
 
 import (
 	"context"
-	"time"
 
 	"google.golang.org/grpc/stats"
 	"google.golang.org/grpc/status"
@@ -29,8 +28,9 @@ func (c *statsHandler) HandleRPC(ctx context.Context, rs stats.RPCStats) {
 	switch rs.(type) {
 	case *stats.End:
 		rpcStats := rs.(*stats.End)
-		end := time.Now()
-		duration := end.Sub(rpcStats.BeginTime)
+		start := rpcStats.BeginTime
+		end := rpcStats.EndTime
+		duration := end.Sub(start)
 
 		var st string
 		s, ok := status.FromError(rpcStats.Error)
