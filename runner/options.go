@@ -63,6 +63,8 @@ type RunConfig struct {
 	tags []byte
 
 	dryRun bool
+
+	maxMsgSize int
 }
 
 // Option controls some aspect of run
@@ -136,6 +138,15 @@ func WithSkipTLSVerify(skip bool) Option {
 func WithDryRun(dryRun bool) Option {
 	return func(o *RunConfig) error {
 		o.dryRun = dryRun
+
+		return nil
+	}
+}
+
+// WithMaxMsgSize Max Message Size
+func WithMaxMsgSize(maxMsgSize uint) Option {
+	return func(o *RunConfig) error {
+		o.maxMsgSize = int(maxMsgSize)
 
 		return nil
 	}

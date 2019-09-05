@@ -65,7 +65,8 @@ type config struct {
 	Tags            *map[string]string `json:"tags,omitempty" toml:"tags,omitempty" yaml:"tags,omitempty"`
 	ReflectMetadata *map[string]string `json:"reflect-metadata,omitempty" toml:"reflect-metadata,omitempty" yaml:"reflect-metadata,omitempty"`
 	Host            string             `json:"host" toml:"host" yaml:"host"`
-	DryRun          bool               `json:"sdryRun" toml:"dryRun" yaml:"dryRun"`
+	DryRun          bool               `json:"dryRun" toml:"dryRun" yaml:"dryRun"`
+    MaxMsgSize      uint               `json:"maxMsgSize" toml:"maxMsgSize" yaml:"maxMsgSize" default:"1073741824"`
 }
 
 // UnmarshalJSON is our custom implementation to handle the Duration fields

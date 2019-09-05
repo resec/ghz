@@ -70,6 +70,8 @@ var (
 	host = kingpin.Arg("host", "Host and port to test.").String()
 
 	dryRun = kingpin.Flag("dry-run", "Only prints call data (JSON).").Default("false").Bool()
+
+	maxMsgSize = kingpin.Flag("max-msg-size", "Max Message Size in bytes. Default is 1024*1024*1024").Default("1073741824").Uint()
 )
 
 func main() {
@@ -129,6 +131,7 @@ func main() {
 		runner.WithReflectionMetadata(cfg.ReflectMetadata),
 		runner.WithConnections(cfg.Connections),
 		runner.WithDryRun(cfg.DryRun),
+		runner.WithMaxMsgSize(cfg.MaxMsgSize),
 	)
 
 	if strings.TrimSpace(cfg.MetadataPath) != "" {
@@ -277,6 +280,7 @@ func createConfigFromArgs() (*config, error) {
 		Tags:            &tagsMap,
 		ReflectMetadata: &rmdMap,
 		DryRun:          *dryRun,
+		MaxMsgSize:          *maxMsgSize,
 	}
 
 	return cfg, nil
