@@ -255,8 +255,10 @@ func (b *Requester) newClientConn(withStatsHandler bool) (*grpc.ClientConn, erro
 		opts = append(opts, grpc.WithAuthority(b.config.authority))
 	}
 
-	opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(b.config.maxMsgSize)))
-	opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(b.config.maxMsgSize)))
+	if b.config.maxMsgSize > 0 {
+		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(b.config.maxMsgSize)))
+		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(b.config.maxMsgSize)))
+	}
 
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, b.config.dialTimeout)
@@ -280,6 +282,7 @@ func (b *Requester) newClientConn(withStatsHandler bool) (*grpc.ClientConn, erro
 
 func (b *Requester) runWorkers() error {
 	nReqPerWorker := b.config.n / b.config.c
+	mod := b.config.n % b.config.c
 
 	if b.config.c == 0 {
 		return nil
@@ -289,6 +292,7 @@ func (b *Requester) runWorkers() error {
 
 	// Ignore the case where b.N % b.C != 0.
 
+	m := 0                            // mod counter
 	n := 0                            // connection counter
 	for i := 0; i < b.config.c; i++ { // concurrency counter
 
@@ -298,6 +302,14 @@ func (b *Requester) runWorkers() error {
 			wID = b.config.name + ":" + wID
 		}
 
+		var nReq int
+		if m < mod {
+			nReq = nReqPerWorker + 1
+			m += 1
+		} else {
+			nReq = nReqPerWorker
+		}
+
 		w := Worker{
 			stub:          b.stubs[n],
 			mtd:           b.mtd,
@@ -305,7 +317,7 @@ func (b *Requester) runWorkers() error {
 			stopCh:        b.stopCh,
 			qpsTick:       b.qpsTick,
 			reqCounter:    &b.reqCounter,
-			nReq:          nReqPerWorker,
+			nReq:          nReq,
 			workerID:      wID,
 			arrayJSONData: b.arrayJSONData,
 		}

@@ -71,7 +71,7 @@ var (
 
 	dryRun = kingpin.Flag("dry-run", "Only prints call data (JSON).").Default("false").Bool()
 
-	maxMsgSize = kingpin.Flag("max-msg-size", "Max Message Size in bytes. Default is 1024*1024*1024").Default("1073741824").Uint()
+	maxMsgSize = kingpin.Flag("max-msg-size", "Max Message Size in bytes. Default is 0. (Use grpc default if <= 0)").Default("0").Uint()
 )
 
 func main() {
