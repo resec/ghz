@@ -204,8 +204,10 @@ func (r *Reporter) Finalize(stopReason StopReason, total time.Duration) *Report 
 		average := r.totalLatenciesSec / float64(r.totalCount)
 		rep.Average = time.Duration(average * float64(time.Second))
 
-		concurrency := float64(r.totalCount) / total.Seconds()
-		rep.Rps = float64(r.totalCount) / r.totalLatenciesSec * concurrency
+		//concurrency := float64(r.totalCount) / total.Seconds()
+		//rep.Rps = float64(r.totalCount) / r.totalLatenciesSec * concurrency
+		
+		rep.Rps = float64(r.totalCount) / total.Seconds()
 
 		okLats := make([]float64, 0)
 		for _, d := range r.details {
